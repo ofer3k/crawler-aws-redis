@@ -1,0 +1,25 @@
+{
+  "name": "main-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": " nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.896.0",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "got": "^11.8.2",
+    "jsdom": "^16.5.3",
+    "node-uuid": "^1.4.8",
+    "nodemon": "^2.0.7",
+    "redis": "^3.1.2",
+    "sqs-consumer": "^5.5.0",
+    "sqs-worker": "0.0.2"
+  }
+}
