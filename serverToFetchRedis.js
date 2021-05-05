@@ -5,13 +5,7 @@ const router=require('./router')
 
 const app = express();
 app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({
-    extended: true
-  }));
 app.use(cors())
 app.use('/api',router)
 
-
-
-
-app.listen(8080, () => console.log(`Started server at http://localhost:8080!`));
+app.listen(8081, () => console.log(`Started server at http://localhost:8081!`));

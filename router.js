@@ -17,7 +17,7 @@ router.get('/', function (req, res) {
 //From the client through the server to the sqs - the first post
 router.post('/new-url', function(req, res) {
     var data = req.body;
-    console.log('this is the url sent to sqs - ',data.url);
+    console.log('this is the url sent to sqs - ',data);
     // handler(data)
     res.status(200).send('url deliverd')
     // res.send("Dog added!");
@@ -26,7 +26,8 @@ router.post('/new-url', function(req, res) {
         'title': 'from client',
         "url":data.url
       }),
-      "QueueUrl": "https://sqs.us-east-1.amazonaws.com/562608490795/ttt"
+      MessageGroupId:'posts',
+      "QueueUrl": "https://sqs.us-east-1.amazonaws.com/562608490795/ttt2.fifo"
     };
     sendToQueue(params)
 });
