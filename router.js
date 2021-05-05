@@ -33,8 +33,10 @@ router.post('/new-url', function(req, res) {
 });
 
 // start the crawler
-router.get('/worker',async function(req, res) {
-  worker()
+router.post('/worker',async function(req, res) {
+  let data=req.body.num
+  // console.log(data)
+  worker(data)
   res.send('stoped')
 });
 // get all from redis
