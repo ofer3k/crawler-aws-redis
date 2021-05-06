@@ -1,5 +1,5 @@
 var express = require('express')
-const {sendToQueue, worker,purgeAllFromQueue}=require('./aws')
+const {sendToQueue, worker,purgeAllFromQueue,workerForBigBatch}=require('./aws')
 const {removeAllFromRedis,getAllFromRedis}=require('./redis')
 var router = express.Router()
 
@@ -38,6 +38,13 @@ router.post('/worker',async function(req, res) {
   // console.log(data)
   worker(data)
   res.send('stoped')
+});
+
+router.post('/workerForBigBatch',async function(req, res) {
+  let data=req.body.num
+  // console.log(data)
+  workerForBigBatch(data)
+  res.send('stoped big batch')
 });
 // get all from redis
 router.get('/listRedis',async function(req, res) {

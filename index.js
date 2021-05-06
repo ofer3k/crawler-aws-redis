@@ -11,7 +11,4 @@ app.use(bodyParser.urlencoded({
 app.use(cors())
 app.use('/api',router)
 
-
-
-
 app.listen(8080, () => console.log(`Started server at http://localhost:8080!`));
