@@ -39,7 +39,7 @@ const getAllFromRedis=async function(){
         });
         
     });
-    await sleep(5000)
+    await sleep(2000)
     // console.log('vvv' ,values)
     return values
 }

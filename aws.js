@@ -11,9 +11,7 @@ const { JSDOM } = jsdom;
 AWS.config.update({region:'us-east-1'});
 const sqs = new AWS.SQS({apiVersion: "2012-11-05"});
 
-// 
 
-// 
 
 // purge queue
 const purgeAllFromQueue=function(){
@@ -39,6 +37,7 @@ const sendToQueue=function(params){
 }
 
 let currentURL;
+let currntLinks=[];
 
 const workerForBigBatch=async function(num){
   let numberOfPagesFromClient=Number(num) ;
@@ -87,6 +86,7 @@ const workerForBigBatch=async function(num){
         };
         
         (async () => {
+          
           const response = await got(vgmUrl);
           const dom = new JSDOM(response.body);
         
@@ -95,6 +95,7 @@ const workerForBigBatch=async function(num){
         
           nodeList.filter(isMidi).filter(noParens).forEach(link => {
             // 
+            currntLinks.push(link)
             let params = {
               "MessageBody": JSON.stringify({
                 'title': 'from client',
@@ -131,7 +132,8 @@ const workerForBigBatch=async function(num){
   // 
   
    axios.post('http://localhost:8001/api/mongo/post', {
-    title: currentURL
+    title: currentURL,
+    childrens:[1,2,3,4]
   })
   .then((response) => {
     // console.log(response);
@@ -149,6 +151,7 @@ const worker=async function(num){
 let numberOfPagesFromClient=Number(num) ;
 sleep(200)
 console.log(numberOfPagesFromClient)
+
 // console.log(num, 'number from client into worker func')
 let i=0;
     pollFromSQS.start()
@@ -200,6 +203,7 @@ const pollFromSQS = Consumer.create({
       
         nodeList.filter(isMidi).filter(noParens).forEach(link => {
           // 
+          currntLinks.push(link)
           let params = {
             "MessageBody": JSON.stringify({
               'title': 'from client',
@@ -236,7 +240,8 @@ title:currentURL
 // 
 
  axios.post('http://localhost:8001/api/mongo/post', {
-  title: currentURL
+  title: currentURL,
+  childrens:[1,2,3,4]
 })
 .then((response) => {
   // console.log(response);
@@ -258,5 +263,6 @@ module.exports = {
  sendToQueue,
  worker,
  purgeAllFromQueue,
-workerForBigBatch
+workerForBigBatch,
+
 };

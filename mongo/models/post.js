@@ -8,7 +8,9 @@ const postSchema=new mongoose.Schema({
         min:3,
         max:160,
         require:true,
-        
+    },
+    childrens:{
+        type:Array,
     }
 },{timestamps:true})
 

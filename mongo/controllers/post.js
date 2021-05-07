@@ -1,10 +1,10 @@
 const Post=require('../models/post')
 exports.create=(req,res)=>{
    console.log(req.body)
-const{title}=req.body //req.params
+const{title,childrens}=req.body //req.params
 
 // create
-Post.create({title},(err,post)=>{
+Post.create({title,childrens},(err,post)=>{
     if(err){
         console.log(err)
         res.status(400).json({error:'Duplicate post. try another title'})
