@@ -5,6 +5,7 @@ const bodyParser=require('body-parser')
 require('dotenv').config()
 // import routes
 const postRoutes=require('./routes/post')
+const graphRoutes=require('./routes/graph')
 
 // app
 const app=express()
@@ -27,6 +28,7 @@ app.use(bodyParser.json())
 
 // routes middlewars
 app.use('/api/mongo',postRoutes)
+app.use('/api/mongo',graphRoutes)
 
 
 // port
