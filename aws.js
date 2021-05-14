@@ -278,7 +278,7 @@ const workerDepth=async function(num){
         if (depth>maxDepth)
         {
           pollFromSQSDepth.stop()
-          const kleinJson=JSON.stringify(klein.serialize())
+          let kleinJson=JSON.stringify(klein.serialize())
           console.log(kleinJson)
           axios.post('http://localhost:8001/api/mongo/post/graph', {
           title: kleinJson,
