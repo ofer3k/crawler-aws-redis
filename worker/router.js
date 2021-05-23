@@ -1,4 +1,3 @@
-const { default: axios } = require('axios')
 var express = require('express')
 const {sendToQueue, worker,purgeAllFromQueue,workerForBigBatch, workerDepth}=require('./aws')
 const {removeAllFromRedis,getAllFromRedis}=require('./redis')
@@ -37,15 +36,7 @@ router.post('/new-url', function(req, res) {
 router.post('/worker',async function(req, res) {
   let data=req.body.num
   // console.log(data)
-  axios.post('http://localhost:8083/api/worker', {
-    num:data,
-        })
-        .then((response) => {
-          console.log(response)
-        }, (error) => {
-          console.log(error);
-        });
-  // worker(data)
+  worker(data)
   res.send('stoped')
 });
 
@@ -57,22 +48,12 @@ router.post('/workerForBigBatch',async function(req, res) {
 });
 
 router.post('/workerDepth',async function(req, res) {
-  let data=req.body.num
-  let data1=req.body.maxPages
-  let data2=req.body.numWorkers
-  console.log(data1 , data2)
-  console.log(data)
-  axios.post('http://localhost:8083/api/workerDepth', {
-    num:data,
-    maxPages:data1,
-    numWorkers:data2
-        })
-        .then((response) => {
-          console.log(response)
-        }, (error) => {
-          console.log(error);
-        });
-  // workerDepth(data)
+  // console.log(req.body.body)
+  let data=req.body.body.num
+  let maxPages=req.body.body.maxPages
+  let numWorkers=req.body.body.numWorkers
+  // console.log(data)
+  workerDepth(data,maxPages,numWorkers)
   res.send('stoped depth batch')
 });
 // get all from redis

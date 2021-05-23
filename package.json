@@ -21,6 +21,7 @@
     "got": "^11.8.2",
     "graph-data-structure": "^1.13.0",
     "jsdom": "^16.5.3",
+    "merge-anything": "^4.0.1",
     "mongoose": "^5.12.7",
     "node-uuid": "^1.4.8",
     "nodemon": "^2.0.7",
