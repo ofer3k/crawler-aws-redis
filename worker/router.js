@@ -14,38 +14,21 @@ router.get('/', function (req, res) {
   res.send('api home page')
 })
 
-//From the client through the server to the sqs - the first post
-router.post('/new-url', function(req, res) {
-    var data = req.body;
-    console.log('this is the url sent to sqs - ',data);
-    // handler(data)
-    res.status(200).send('url deliverd')
-    // res.send("Dog added!");
-    const params = {
-      "MessageBody": JSON.stringify({
-        'title': 'from client',
-        "url":data.url
-      }),
-      MessageGroupId:'posts',
-      "QueueUrl": "https://sqs.us-east-1.amazonaws.com/562608490795/ttt2.fifo"
-    };
-    sendToQueue(params)
-});
-
+// Functions for workers in a different nature
 // start the crawler
-router.post('/worker',async function(req, res) {
-  let data=req.body.num
-  // console.log(data)
-  worker(data)
-  res.send('stoped')
-});
+// router.post('/worker',async function(req, res) {
+//   let data=req.body.num
+//   // console.log(data)
+//   worker(data)
+//   res.send('stoped')
+// });
 
-router.post('/workerForBigBatch',async function(req, res) {
-  let data=req.body.num
-  // console.log(data)
-  workerForBigBatch(data)
-  res.send('stoped big batch')
-});
+// router.post('/workerForBigBatch',async function(req, res) {
+//   let data=req.body.num
+//   // console.log(data)
+//   workerForBigBatch(data)
+//   res.send('stoped big batch')
+// });
 
 router.post('/workerDepth',async function(req, res) {
   // console.log(req.body.body)

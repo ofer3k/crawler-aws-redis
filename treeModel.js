@@ -1,9 +1,8 @@
+// The file was created to show the functionality of the graph library
+// -------------------------------------------------------------------
 var Graph = require("graph-data-structure");
 
 var klein = Graph();
-
-// klein.addNode('name','malc12312312a');
-
 
 klein.addEdge("malca", "ronit");
 klein.addEdge("malca", "yosi");

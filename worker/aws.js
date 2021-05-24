@@ -12,6 +12,10 @@ const { JSDOM } = jsdom;
 AWS.config.update({region:'us-east-1'});
 const sqs = new AWS.SQS({apiVersion: "2012-11-05"});
 
+var maxUrls=0;
+var depth=0
+var pages=0
+
 let currentNumberOfNodes=0;
 let currentNumberOfDepth=0;
 let klein = Graph();
@@ -152,9 +156,7 @@ let obj={
   url:'ofer',
   childerns:[]
 }
-var maxUrls=0;
-var depth=0
-var pages=0
+
 
 const worker=async function(num){
 
@@ -276,7 +278,9 @@ const workerDepth=async function(num,maxPages,numWorkers){
   let maxDepth=Number(num) ;
   let maxPages1=Number(maxPages);
   sleep(200)
+
     pollFromSQSDepth.start()
+
       // every time a worker finishes its current round
       pollFromSQSDepth.on('response_processed',async () => {
         pages++
@@ -317,6 +321,7 @@ const workerDepth=async function(num,maxPages,numWorkers){
         .then(async (response) => { 
           pages=0;
           maxUrls=0
+          depth=0
         },
          (error) => {
           console.log(error,' telling manager worker stoped his work FAILED');
@@ -336,17 +341,16 @@ const pollFromSQSDepth = Consumer.create({
   queueUrl: 'https://sqs.us-east-1.amazonaws.com/562608490795/ttt2.fifo',
   batchSize:1,
   handleMessage: async (message) => {
-    console.log('start')
       let redisData=await getAllFromRedis()
       // the site right now - from sqs message
       currentURL=(JSON.parse(message.Body).url)
       const vgmUrl=JSON.parse(message.Body).url
 
+
+      // finding all href's in url
       const isMidi = (link) => {
-        
         // Return false if there is no href attribute.
         if(typeof link.href === 'undefined') { return false }
-      
         return link.href.includes('http');
       };
       const noParens = (link) => {
@@ -375,13 +379,14 @@ const pollFromSQSDepth = Consumer.create({
           if(!redisData.includes(link.href)){
             maxUrls++
           console.log('father',currentURL, 'kid', link.href,)
-        klein.addEdge(currentURL, link.href);
+          klein.addEdge(currentURL, link.href);
         // graph to manager
         try {
           axios.post('http://localhost:8084/api/addEdge',{currentURL,currentLink:link.href}) 
         } catch (error) {
           console.log(error,'sending graph to manager FAILED')
         }
+        // send url to queue
            sqs.sendMessage(params,async (err, data) => {
               if (err) {
                 console.log("There was an Error: ", err);
