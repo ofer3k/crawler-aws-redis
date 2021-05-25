@@ -12,4 +12,8 @@ app.use(bodyParser.urlencoded({
 app.use(cors())
 app.use('/api',router)
 
+app.use(bodyParser.json({limit:'50mb', extended: true}))
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
+
+
 app.listen(8083, () => console.log(`Started server at http://localhost:8083!`));

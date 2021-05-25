@@ -32,12 +32,15 @@ const getAllFromRedis=async function(){
 
         keys.forEach(function (key) {
             client.get(key, function (err, value) {
+               
+                // console.log(value)
                 values.push(value)
             });
         });
         
     });
     await sleep(2000)
+    // console.log('vvv' ,values)
     return values
 }
 
@@ -55,6 +58,9 @@ const cachingFromRedis=function(key){
                 });    
             }
             else {
+                // const jobs = await axios.get(`https://jobs.github.com/positions.json?search=${searchTerm}`);
+                
+                // client.setex(searchTerm, 600, JSON.stringify(jobs.data));
                 return({
                     jobs: jobs.data,
                     message: "cache miss"
@@ -65,7 +71,12 @@ const cachingFromRedis=function(key){
         return({message: err.message});
     }
 }
-
+// let a=[]
+// const main=async function(){
+//    a=await getAllFromRedis()  
+//    console.log(a)
+// }
+// main()
 const removeAllFromRedis=function(){
     client.flushdb( function (err, succeeded) {
         console.log(succeeded); // will be true if successfull

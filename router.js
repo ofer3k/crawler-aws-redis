@@ -34,47 +34,47 @@ router.post('/new-url', function(req, res) {
 });
 
 // start the crawler
-router.post('/worker',async function(req, res) {
-  let data=req.body.num
-  // console.log(data)
-  axios.post('http://localhost:8083/api/worker', {
-    num:data,
-        })
-        .then((response) => {
-          console.log(response)
-        }, (error) => {
-          console.log(error);
-        });
-  // worker(data)
-  res.send('stoped')
-});
+// router.post('/worker',async function(req, res) {
+//   let data=req.body.num
+//   // console.log(data)
+//   axios.post('http://localhost:8083/api/worker', {
+//     num:data,
+//         })
+//         .then((response) => {
+//           console.log(response)
+//         }, (error) => {
+//           console.log(error);
+//         });
+//   // worker(data)
+//   res.send('stoped')
+// });
 
-router.post('/workerForBigBatch',async function(req, res) {
-  let data=req.body.num
-  // console.log(data)
-  workerForBigBatch(data)
-  res.send('stoped big batch')
-});
+// router.post('/workerForBigBatch',async function(req, res) {
+//   let data=req.body.num
+//   // console.log(data)
+//   workerForBigBatch(data)
+//   res.send('stoped big batch')
+// });
 
-router.post('/workerDepth',async function(req, res) {
-  let data=req.body.num
-  let data1=req.body.maxPages
-  let data2=req.body.numWorkers
-  console.log(data1 , data2)
-  console.log(data)
-  axios.post('http://localhost:8083/api/workerDepth', {
-    num:data,
-    maxPages:data1,
-    numWorkers:data2
-        })
-        .then((response) => {
-          console.log(response)
-        }, (error) => {
-          console.log(error);
-        });
-  // workerDepth(data)
-  res.send('stoped depth batch')
-});
+// router.post('/workerDepth',async function(req, res) {
+//   let data=req.body.num
+//   let data1=req.body.maxPages
+//   let data2=req.body.numWorkers
+//   console.log(data1 , data2)
+//   console.log(data)
+//   axios.post('http://localhost:8083/api/workerDepth', {
+//     num:data,
+//     maxPages:data1,
+//     numWorkers:data2
+//         })
+//         .then((response) => {
+//           console.log(response)
+//         }, (error) => {
+//           console.log(error);
+//         });
+//   // workerDepth(data)
+//   res.send('stoped depth batch')
+// });
 // get all from redis
 router.get('/listRedis',async function(req, res) {
  const a=await getAllFromRedis()

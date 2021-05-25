@@ -21,7 +21,7 @@ let maxDepth1;
 // updates from workers
 let currentNumberOfDepth=0;
 let currentNumberOfNodes=0;
-
+let isWorking=0;
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
   console.log('Time: ', Date.now())
@@ -64,12 +64,22 @@ router.post('/stratFromClient',async function(req, res) {
   root url : ${rootURL}`)
   // sending max page & deep to initial worker (just for extra check)
   let firstInitialWorker=req.body
-  
+  isWorking++
     await axios.post('http://localhost:8083/api/workerDepth', {
       body:firstInitialWorker
     })  
-  
+    console.log('is working - ',isWorking)
 
+  if(numOfWorkers1==2)
+  {
+    console.log('you asked for two workers')
+    isWorking++
+    await axios.post('http://localhost:8085/api/workerDepth', {
+      body:firstInitialWorker
+    })  
+    console.log('is working - ',isWorking)
+  }
+   
   res.status(200).send({
     information:'request got from client, the manager is updated and a worker will begin to work'
   })
@@ -109,18 +119,26 @@ router.post('/addEdge',async function(req, res) {
 
 // When boundaries are reached, the worker updates the manager that his work has ended
 router.post('/workerFinishedEnd',async function(req, res) {
-  // Double verification that the displayed graph does not exceed the defined limits
-  let nodesFinal = graphToMongo.nodes.splice(0, maxPages1)
-  let linksFinal = graphToMongo.links.splice(0, maxPages1+1)
-  let graphAfterCut={nodes:nodesFinal,links:linksFinal}
-  // stringify for mongoDB
-  let graphToMongo1=JSON.stringify(graphAfterCut)
-  try {
-    await axios.post('http://localhost:8001/api/mongo/post/graph', {
-      title:graphToMongo1
-    })  
-  } catch (error) {
-    res.status(400).send(error,{information:'graph FAILED'})
+  console.log('is working - ',isWorking)
+  isWorking--
+  if(isWorking<0){
+// Double verification that the displayed graph does not exceed the defined limits
+let tempNodes=graphToMongo.nodes
+let tempLinks=graphToMongo.links
+// using temp to not splice the original data (needs to be save for more than one worker)
+let nodesFinal = tempNodes.splice(0, maxPages1)
+let linksFinal = tempLinks.splice(0, maxPages1+1)
+let graphAfterCut={nodes:nodesFinal,links:linksFinal}
+// stringify for mongoDB
+let graphToMongo1=JSON.stringify(graphAfterCut)
+try {
+  await axios.post('http://localhost:8001/api/mongo/post/graph', {
+    title:graphToMongo1
+  })  
+} catch (error) {
+  res.status(400).send(error,{information:'graph FAILED'})
+}
+
   }
   
   res.status(200).send({information:'sent graph to mongo'})
