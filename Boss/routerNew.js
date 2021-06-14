@@ -111,7 +111,15 @@ router.use(function timeLog (req, res, next) {
        await sleep(3000)
         if(data.url === undefined) throw new Error('url field was missing');
         res.status(200).send(`added ${data.url} to the pipe`)
-               
+        axios.get('http://localhost:8085/api/workerJob')
+        .then(function (response) {
+          // handle success
+          console.log('success from worker');
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })         
     } catch (error) {
         let errMsg=`somthing went wrong!` + ` ${error}`
         res.status(400).send(errMsg)        
