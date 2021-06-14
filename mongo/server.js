@@ -6,6 +6,8 @@ require('dotenv').config()
 // import routes
 const postRoutes=require('./routes/post')
 const graphRoutes=require('./routes/graph')
+const nodeRoutes=require('./routes/node')
+
 
 // app
 const app=express()
@@ -26,9 +28,11 @@ app.use(cors())
 app.use(bodyParser.json())
 
 
-// routes middlewars
-app.use('/api/mongo',postRoutes)
-app.use('/api/mongo',graphRoutes)
+// // routes middlewars
+// app.use('/api/mongo',postRoutes)
+// app.use('/api/mongo',graphRoutes)
+app.use('/api/mongo',nodeRoutes)
+
 
 
 // port

@@ -11,8 +11,8 @@ let graphToMongo;
 let graphToMongoNodes={};
 let graphToMongoLinks={};
 // for merging the manager graph with the worker's graph
-let evolutionNodes;
-let evolutionLinks;
+let evolutionNodes={};
+let evolutionLinks={};
 let klein = Graph();
 // limits from client
 let numOfWorkers1;
@@ -57,11 +57,13 @@ router.post('/stratFromClient',async function(req, res) {
   maxPages1=req.body.maxPages;
   maxDepth1=req.body.num;
   numOfWorkers1=req.body.numWorkers;
+  graphToMongoNodes={id:rootURL}
   console.log(`client's limits - `,`
   max pgaes : ${maxPages1}
   max depth : ${maxDepth1}
   number of workers : ${numOfWorkers1}
-  root url : ${rootURL}`)
+  root url : ${rootURL}
+  graph to mongo nodes : ${graphToMongoNodes.id}`)
   // sending max page & deep to initial worker (just for extra check)
   let firstInitialWorker=req.body
   isWorking++
@@ -72,12 +74,13 @@ router.post('/stratFromClient',async function(req, res) {
 
   if(numOfWorkers1==2)
   {
-    console.log('you asked for two workers')
+    console.log('you asked for two worker')
     isWorking++
     await axios.post('http://localhost:8085/api/workerDepth', {
       body:firstInitialWorker
     })  
     console.log('is working - ',isWorking)
+
   }
    
   res.status(200).send({
@@ -95,14 +98,18 @@ router.post('/stratFromClient',async function(req, res) {
 // after full batch - updating the manager
 router.post('/workerUpdate',async function(req, res) {
   console.log('update')
-    graphToMongoNodes = {...graphToMongoNodes,...req.body.update.nodes}
-    graphToMongoLinks = {...graphToMongoLinks,...req.body.update.links}
+
+    // graphToMongoNodes = {...graphToMongoNodes,...req.body.update.nodes}
+    // graphToMongoLinks = {...graphToMongoLinks,...req.body.update.links}
   // merge data that came from worker with existing data
-   evolutionNodes = merge(graphToMongoNodes, req.body.update.nodes)
-   evolutionLinks = merge(graphToMongoLinks, req.body.update.links)
-
+   evolutionNodes = merge(evolutionNodes, req.body.update.nodes)
+   evolutionLinks = merge(evolutionLinks, req.body.update.links)
+  
+if(evolutionNodes[0].id==rootURL)
+{
   graphToMongo={nodes:evolutionNodes,links:evolutionLinks}
-
+  console.log(graphToMongo.nodes)
+}
   //numbers of URL's all workers have collected 
  currentNumberOfNodes=Object.keys(evolutionNodes).length
 res.status(200).send({information:'the manager was updated'})
@@ -121,7 +128,11 @@ router.post('/addEdge',async function(req, res) {
 router.post('/workerFinishedEnd',async function(req, res) {
   console.log('is working - ',isWorking)
   isWorking--
-  if(isWorking<0){
+  console.log(graphToMongo.nodes[0].id,rootURL,isWorking)
+  if(isWorking<0 
+    // && rootURL==graphToMongo.nodes[0].id
+    ){
+    console.log('after if check!!!',graphToMongo.nodes[0].id)
 // Double verification that the displayed graph does not exceed the defined limits
 let tempNodes=graphToMongo.nodes
 let tempLinks=graphToMongo.links
